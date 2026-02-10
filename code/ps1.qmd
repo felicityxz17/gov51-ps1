@@ -106,7 +106,7 @@ knitr::kable(acs2024_stats, col.names = c("Variable", "N", "Mean", "Std. Dev.", 
 
 ### 2.6
 
-The maximum commute time, 195 minutes, does not seem to fall into the range of common values of commute times, but is still reasonable as a maximum duration of a daily commute. A one-way commute of a little over 3 hours is similar to a commute length from Salem, MA to Boston, MA, so the data point would make sense for a worker with a home in a rural area and a job in the city. 
+The maximum commute time, 195 minutes, does not seem to fall into the range of common values of commute times, but is still reasonable as a maximum duration of a daily commute. A one-way commute of a little over 3 hours is similar to a commute length from Salem, MA to Boston, MA, so the data point would make sense for a worker with a home in a rural area and a job in the city.
 
 ## 3 Who Should Be in Your Analysis?
 
@@ -139,6 +139,7 @@ Since the goal of this subset is to analyze commute times for people who actuall
 length(commuters$TRANTIME)
 min(commuters$TRANTIME)
 ```
-1,359,943 observations remain, which is consistent with the remaining number of data points from 3.1. The new minimum `TRANTIME` is 1 minute, which makes sense because it still qualifies as a commute and is reasonable for individuals who might live right next to their workplace. 
+
+1,359,943 observations remain, which is consistent with the remaining number of data points from 3.1. The new minimum `TRANTIME` is 1 minute, which makes sense because it still qualifies as a commute and is reasonable for individuals who might live right next to their workplace.
 
 ### 3.4
