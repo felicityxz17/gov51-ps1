@@ -1,26 +1,144 @@
 ---
 title: "ps1"
+author: Felicity Zhang
 format: html
 editor: visual
 ---
 
-## Quarto
+https://github.com/felicityxz17/gov51-ps1.git
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+## 2 Get to Know Your Data
 
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+### 2.1
 
 ```{r}
-1 + 1
+library(tidyverse)
+acs2024 <- read.csv("data/raw/acs2024.csv")
 ```
 
-You can add options to executable code like this
+### 2.2
 
 ```{r}
-#| echo: false
-2 * 2
+names(acs2024)
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+`YEAR`: Year the household was included in the census; 4 digits
+
+`SAMPLE`: IPUMS sample identifier; 6 digits (4 for year, 2 for sample)
+
+`SERIAL`: Household serial number (unique identifying number)
+
+`CBSERIAL`: Household serial number assigned by the Census Bureau
+
+`HHWT`: Household weight (number of households in the U.S. population represented by the given sample household)
+
+`CLUSTER`: Variable for variance estimation and correction; 11 digits
+
+`STATEFIP`: State FIPS (Federal Information Processing Standards) code
+
+`GQ`: Group quarters status (households, group quarters, or vacant units)
+
+`PERNUM`: Person number within their household based on order of appearance on the census
+
+`PERWT`: Person weight (number of people in the U.S. population represented by the given sample person); 2 implied decimals
+
+`SEX`: Male (1) or female (2) or missing/blank (9)
+
+`AGE`: Age in years
+
+`EDUC`: Educational attainment measured by highest year of school or degree completed
+
+`EDUCD`:
+
+`EMPSTAT`: Employment status
+
+`EMPSTATD`:
+
+`INCTOT`: Total pre-tax personal income in the previous year; 7 digit code (9999999 = N/A)
+
+`TRANTIME`: Total number of minutes to get from home to work in the previous week; 3 digits (000 = N/A)
+
+### 2.3
+
+```{r}
+# SEX: 1 = Male; 2 = Female; 9 = Missing/blank
+acs2024 <- mutate(acs2024, female = ifelse(SEX == 2, 1, 0))
+
+# EDUC: 00-06 = N/A or no schooling through Grade 12; 07-10 = through college; 11 = 5+ years of college
+acs2024 <- mutate(acs2024, less_than_hs = ifelse(EDUC < 06, 1, 0))
+acs2024 <- mutate(acs2024, hs_only = ifelse(EDUC == 06, 1, 0))
+acs2024 <- mutate(acs2024, some_college = ifelse((EDUC > 06) & (EDUC < 10), 1, 0))
+acs2024 <- mutate(acs2024, college_only = ifelse(EDUC == 10, 1, 0))
+acs2024 <- mutate(acs2024, advanced_degree = ifelse(EDUC > 10, 1, 0))
+
+# EMPSTAT: 0 = N/A; 1 = Employed; 2 = Unemployed; 3 = Not in labor force
+acs2024 <- mutate(acs2024, employed = ifelse(EMPSTAT == 1, 1, 0))
+acs2024 <- mutate(acs2024, unemployed = ifelse(EMPSTAT == 2, 1, 0))
+acs2024 <- mutate(acs2024, not_in_labor_force = ifelse(EMPSTAT == 3, 1, 0))
+```
+
+### 2.4
+
+Accidentally treating "N/A" codes as real zeros would likely skew summary statistics by misinterpreting them as actual data points. For instance, the variable `TRANTIME` might become right-skewed due to the inclusion of `000` as indicating 0-minute transit time, incorrectly decreasing summary statistics like mean and median while also expanding the leftward range endpoint to include this value that does not otherwise make sense in the context of the data.
+
+### 2.5
+
+```{r}
+#remove N/A values from inctot
+INCTOT_modified = acs2024[acs2024$INCTOT != 9999999 & acs2024$INCTOT != 9999998, "INCTOT"]
+
+acs2024_variable <- c("Age", "Female", "Less than High School", "High School Only", "Some College", "College Only", "Advanced Degree", "Employed", "Unemployed", "Not in Labor Force", "Commute Time (mins)", "Total Income ($)")
+
+acs2024_n <- c(length(acs2024$AGE), sum(acs2024$female), sum(acs2024$less_than_hs), sum(acs2024$hs_only), sum(acs2024$some_college), sum(acs2024$college_only), sum(acs2024$advanced_degree), sum(acs2024$employed), sum(acs2024$unemployed), sum(acs2024$not_in_labor_force), length(acs2024$TRANTIME), length(INCTOT_modified))
+
+acs2024_mean <- c(mean(acs2024$AGE), mean(acs2024$female), mean(acs2024$less_than_hs), mean(acs2024$hs_only), mean(acs2024$some_college), mean(acs2024$college_only), mean(acs2024$advanced_degree), mean(acs2024$employed), mean(acs2024$unemployed), mean(acs2024$not_in_labor_force), mean(acs2024$TRANTIME), mean(INCTOT_modified))
+
+acs2024_sd <- c(sd(acs2024$AGE), sd(acs2024$female), sd(acs2024$less_than_hs), sd(acs2024$hs_only), sd(acs2024$some_college), sd(acs2024$college_only), sd(acs2024$advanced_degree), sd(acs2024$employed), sd(acs2024$unemployed), sd(acs2024$not_in_labor_force), sd(acs2024$TRANTIME), sd(INCTOT_modified))
+
+acs2024_min <- c(min(acs2024$AGE), min(acs2024$female), min(acs2024$less_than_hs), min(acs2024$hs_only), min(acs2024$some_college), min(acs2024$college_only), min(acs2024$advanced_degree), min(acs2024$employed), min(acs2024$unemployed), min(acs2024$not_in_labor_force), min(acs2024$TRANTIME), min(INCTOT_modified))
+
+acs2024_max <- c(max(acs2024$AGE), max(acs2024$female), max(acs2024$less_than_hs), max(acs2024$hs_only), max(acs2024$some_college), max(acs2024$college_only), max(acs2024$advanced_degree), max(acs2024$employed), max(acs2024$unemployed), max(acs2024$not_in_labor_force), max(acs2024$TRANTIME), max(INCTOT_modified))
+
+acs2024_stats <- data.frame(acs2024_variable, acs2024_n, acs2024_mean, acs2024_sd, acs2024_min, acs2024_max)
+
+knitr::kable(acs2024_stats, col.names = c("Variable", "N", "Mean", "Std. Dev.", "Min", "Max"), digits = 2, caption = "Table 1. Summary Statistics for 2024 ACS Sample")
+```
+
+### 2.6
+
+The maximum commute time, 195 minutes, does not seem to fall into the range of common values of commute times, but is still reasonable as a maximum duration of a daily commute. A one-way commute of a little over 3 hours is similar to a commute length from Salem, MA to Boston, MA, so the data point would make sense for a worker with a home in a rural area and a job in the city. 
+
+## 3 Who Should Be in Your Analysis?
+
+### 3.1
+
+```{r}
+sum(acs2024$TRANTIME == 0)
+sum(acs2024$TRANTIME == 0)/length(acs2024$TRANTIME == 0)
+
+head(acs2024[acs2024$TRANTIME == 0,c("AGE", "EMPSTAT", "INCTOT", "employed", "unemployed", "not_in_labor_force")], 20)
+```
+
+2,062,945 people out of the total 3,422,888 observations have `TRANTIME == 0`, representing a percentage of 60.26914%. A sample of the data indicates that these data points largely come from people who are not in the workforce, such as young adults (AGE between 18 and 22) and the retired (positive INCTOT from retirement pension and AGE values mostly over 50). However, it is also plausible that these data points might also include some people who are unemployed (as in the 17th sample entry above) or people who are employed but whose jobs do not require a commute, such as remote workers and care workers.
+
+### 3.2
+
+```{r}
+commuters = acs2024[acs2024$TRANTIME != 0,]
+
+sum(commuters$employed == 0)
+
+acs2024[acs2024$TRANTIME == 0 & acs2024$employed == 1,]
+```
+
+Since the goal of this subset is to analyze commute times for people who actually commute to work, we should remove all data points with a transit time of 0, regardless of the reason that they have 0 transit time. All values greater than 0 are valid values for transit time, so the subset should be based on the condition `TRANTIME > 0`. As a sanity check, we can confirm that everyone in this subset is employed.
+
+### 3.3
+
+```{r}
+length(commuters$TRANTIME)
+min(commuters$TRANTIME)
+```
+1,359,943 observations remain, which is consistent with the remaining number of data points from 3.1. The new minimum `TRANTIME` is 1 minute, which makes sense because it still qualifies as a commute and is reasonable for individuals who might live right next to their workplace. 
+
+### 3.4
