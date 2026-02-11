@@ -1,7 +1,7 @@
 ---
 title: "ps1"
 author: Felicity Zhang
-format: html
+format: pdf
 editor: visual
 ---
 
@@ -187,6 +187,7 @@ cat("The mean commute time from 3.4, Table 2 is", round(mean(commuters$TRANTIME)
 cat("The median commute time is", median(commuters$TRANTIME), "minutes.") 
 ```
 Since the mean is greater than the median, we can confirm that the distribution is right-skewed, consistent with the histogram in 4.1, Figure 1.
+
 ### 4.4
 ```{r}
 ggsave("output/commute_histogram.png", width = 8, height = 5)
@@ -201,18 +202,19 @@ weighted.mean(commuters$TRANTIME, commuters$PERWT)
 ### 5.2
 Yes, the weighted mean is slightly different from the unweighted mean calculated earlier. 
 ```{r}
-cat("The weighted mean from 5.1 is", round(weighted.mean(commuters$TRANTIME, commuters$PERWT),2), "minutes.")
+cat("The weighted mean from 5.1 is approximately", round(weighted.mean(commuters$TRANTIME, commuters$PERWT),2), "minutes.")
 
-cat("The unweighted mean from 4.3 is", round(mean(commuters$TRANTIME), 2), "minutes.")
+cat("The unweighted mean from 4.3 is approximately", round(mean(commuters$TRANTIME), 2), "minutes.")
 
-cat("The unweighted mean is slightly greater than the weighted mean by about", round(mean(commuters$TRANTIME)-weighted.mean(commuters$TRANTIME, commuters$PERWT),2), "minutes.")
+cat("The unweighted mean is slightly greater than the weighted mean by approximately", round(mean(commuters$TRANTIME)-weighted.mean(commuters$TRANTIME, commuters$PERWT),2), "minutes.")
 ```
 ### 5.3
+The unweighted mean indicates that within the given sample, the average commute of respondents who commuted to work was approximately:
 ```{r}
-cat("The unweighted mean indicates that within the given sample, the average commute of respondents who commuted to work was", round(mean(commuters$TRANTIME), 2), "minutes.") 
+cat(round(mean(commuters$TRANTIME), 2), "minutes.") 
 ```
-The weighted mean indicates that if respondents' commute times are reweighted to match the proportion of the population they represent, then:
+The weighted mean indicates that if respondents' commute times are reweighted to match the proportion of the population they represent, then the average commute among individuals in the U.S. who commute to work is estimated by the sample to be approximately:
 ```{r}
-cat("The average commute among individuals in the U.S. who commute to work is estimated by the sample to be", round(weighted.mean(commuters$TRANTIME, commuters$PERWT),2), "minutes.")
+cat(round(weighted.mean(commuters$TRANTIME, commuters$PERWT),2), "minutes.")
 ```
 These numbers might differ if the sample is not representative of the general population; for instance, if the sample includes a large number of individuals living in rural areas who need to make long daily commutes to jobs in urban centers, and the proportion of these individuals in the overall sample is greater than their true population proportion across the U.S., then the unweighted mean would be higher than the weighted mean. However, the fact that the two means are very close in the given sample indicates that the distribution of individual respondents within the sample is representative of the distribution across the entire population. 
