@@ -558,7 +558,71 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="section-11" class="level3">
 <h3 class="anchored" data-anchor-id="section-11">4.2</h3>
-<p>The</p>
+<p>The distribution is clearly right-skewed rather than symmetric, with a long right tail extending to values around 155-160 minutes and beyond (up to 195, from the findings of 2.6). The center of the distribution appears to be somewhere in the range of 20-35 minutes, aligning with the median value of 20 minutes from 3.4, Table 2. The most common commute times, represented by “spikes” in the graph, seem to be between 10-25 minutes and 25-30 minutes, with smaller spikes occurring near 40-45 minutes and 60-65 minutes. There is also a very small relative spike around 90-95 minutes. (These spikes are possibly partly attributable to individual rounding to “nice” times like 15, 30, 60, and 90 minutes.)</p>
+</section>
+<section id="section-12" class="level3">
+<h3 class="anchored" data-anchor-id="section-12">4.3</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"The mean commute time from 3.4, Table 2 is"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(commuters<span class="sc">$</span>TRANTIME), <span class="dv">2</span>), <span class="st">"minutes."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The mean commute time from 3.4, Table 2 is 27.22 minutes.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"The median commute time is"</span>, <span class="fu">median</span>(commuters<span class="sc">$</span>TRANTIME), <span class="st">"minutes."</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The median commute time is 20 minutes.</code></pre>
+</div>
+</div>
+<p>Since the mean is greater than the median, we can confirm that the distribution is right-skewed, consistent with the histogram in 4.1, Figure 1. ### 4.4</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"output/commute_histogram.png"</span>, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="the-weight-of-evidence" class="level2">
+<h2 class="anchored" data-anchor-id="the-weight-of-evidence">5 The Weight of Evidence</h2>
+<section id="section-13" class="level3">
+<h3 class="anchored" data-anchor-id="section-13">5.1</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">weighted.mean</span>(commuters<span class="sc">$</span>TRANTIME, commuters<span class="sc">$</span>PERWT)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 27.19112</code></pre>
+</div>
+</div>
+</section>
+<section id="section-14" class="level3">
+<h3 class="anchored" data-anchor-id="section-14">5.2</h3>
+<p>Yes, the weighted mean is slightly different from the unweighted mean calculated earlier.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"The weighted mean from 5.1 is"</span>, <span class="fu">round</span>(<span class="fu">weighted.mean</span>(commuters<span class="sc">$</span>TRANTIME, commuters<span class="sc">$</span>PERWT),<span class="dv">2</span>), <span class="st">"minutes."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The weighted mean from 5.1 is 27.19 minutes.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"The unweighted mean from 4.3 is"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(commuters<span class="sc">$</span>TRANTIME), <span class="dv">2</span>), <span class="st">"minutes."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The unweighted mean from 4.3 is 27.22 minutes.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"The unweighted mean is slightly greater than the weighted mean by about"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(commuters<span class="sc">$</span>TRANTIME)<span class="sc">-</span><span class="fu">weighted.mean</span>(commuters<span class="sc">$</span>TRANTIME, commuters<span class="sc">$</span>PERWT),<span class="dv">2</span>), <span class="st">"minutes."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The unweighted mean is slightly greater than the weighted mean by about 0.02 minutes.</code></pre>
+</div>
+</div>
+</section>
+<section id="section-15" class="level3">
+<h3 class="anchored" data-anchor-id="section-15">5.3</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"The unweighted mean indicates that within the given sample, the average commute of respondents who commuted to work was"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(commuters<span class="sc">$</span>TRANTIME), <span class="dv">2</span>), <span class="st">"minutes."</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The unweighted mean indicates that within the given sample, the average commute of respondents who commuted to work was 27.22 minutes.</code></pre>
+</div>
+</div>
+<p>The weighted mean indicates that if respondents’ commute times are reweighted to match the proportion of the population they represent, then:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"The average commute among individuals in the U.S. who commute to work is estimated by the sample to be"</span>, <span class="fu">round</span>(<span class="fu">weighted.mean</span>(commuters<span class="sc">$</span>TRANTIME, commuters<span class="sc">$</span>PERWT),<span class="dv">2</span>), <span class="st">"minutes."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The average commute among individuals in the U.S. who commute to work is estimated by the sample to be 27.19 minutes.</code></pre>
+</div>
+</div>
+<p>These numbers might differ if the sample is not representative of the general population; for instance, if the sample includes a large number of individuals living in rural areas who need to make long daily commutes to jobs in urban centers, and the proportion of these individuals in the overall sample is greater than their true population proportion across the U.S., then the unweighted mean would be higher than the weighted mean. However, the fact that the two means are very close in the given sample indicates that the distribution of individual respondents within the sample is representative of the distribution across the entire population.</p>
 </section>
 </section>
 
