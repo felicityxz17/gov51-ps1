@@ -159,3 +159,33 @@ commuters_stats <- data.frame(commuters_variable, commuters_n, commuters_mean, c
 
 knitr::kable(commuters_stats, col.names = c("Variable", "N", "Mean", "Std. Dev.", "Min", "Max"), digits = 2, caption = "Table 2. Summary Statistics for 2024 ACS Sample, Commuters Subset")
 ```
+
+## 4 Visualize and Interpret
+### 4.1
+```{r}
+library(ggplot2)
+
+ggplot(commuters, aes(x = TRANTIME)) + geom_histogram(
+  binwidth = 5,
+  fill = "#0000FF",
+  color = "white"
+) + 
+  labs(
+    title = "Figure 1. Histogram of Commute Times",
+    x = "Commute Time (minutes)",
+    y = "Number of Workers"
+  ) + theme_minimal()
+```
+
+### 4.2
+The distribution is clearly right-skewed rather than symmetric, with a long right tail extending to values around 155-160 minutes (and likely beyond, given the findings of 2.6). The center of the distribution appears to be somewhere in the range of 20-35 minutes, aligning with the median value of 20 minutes from 3.4, Table 2. The most common commute times, represented by "spikes" in the graph, seem to be between 10-25 minutes and 25-30 minutes, with smaller spikes occurring near 40-45 minutes and 60-65 minutes. There is also a very small relative spike around 90-95 minutes. (These spikes are possibly partly attributable to individual rounding to "nice" times like 15, 30, 60, and 90 minutes.)
+
+### 4.3
+```{r}
+cat("The mean commute time from 3.4, Table 2 is", mean(commuters$TRANTIME), "minutes, while the median commute time is", median(commuters$TRANTIME), "minutes. Since the mean is greater than the median, we can confirm that the distribution is right-skewed, consistent with the histogram in 4.1, Figure 1.") 
+```
+
+### 4.4
+```{r}
+ggsave("output/commute_histogram.png", width = 8, height = 5)
+```
